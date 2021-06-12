@@ -1,5 +1,15 @@
 # Getting Started with Create React App
 
+Whatsapp Clone - A WhatsApp Rooms Chat Engine Concept made with love using the following technologies:
+
+React
+Firebase
+Google Authentication
+React Router
+Redux
+Context API
+Material UI
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
