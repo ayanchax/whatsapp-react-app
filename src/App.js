@@ -4,8 +4,10 @@ import Sidebar from "./Sidebar";
 import Chat from "./Chat";
 import Login from "./Login";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { useStateProviderContextValue } from './StateProvider';
 function App() {
-  const [user, setUser] = useState(null)
+
+  const [user, dispatch] = useStateProviderContextValue();
   return (
     // BEM convention
     <div className="app" >

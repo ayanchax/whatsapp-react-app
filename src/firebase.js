@@ -15,8 +15,8 @@ const firebaseApp = firebase.initializeApp(firebaseConfig);
 const db = firebaseApp.firestore();
 // set up authentication for firebase
 const auth = firebase.auth();
-// set up authentication provider as google, the app will let user sign in via google.
-const authProvider = new firebase.auth.GoogleAuthProvider();
+// set up authentication provider as google, the app will let user sign in via google via the auth of firebase.
+const googleAuthProvider = new firebase.auth.GoogleAuthProvider();
 
-export { auth, authProvider };
+export { auth, googleAuthProvider };
 export default db;

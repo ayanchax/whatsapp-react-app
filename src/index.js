@@ -3,10 +3,17 @@ import ReactDOM from "react-dom";
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-
-ReactDOM.render(<React.StrictMode >
-  <App />
-</React.StrictMode>,
+import { StateProvider } from "./StateProvider"
+import reducer, { initialState } from "./reducer";
+ReactDOM.render(
+  <React.StrictMode>
+    {/* Wrapping our App inside a React Context StateProvider Data Layer and implementing the concept 
+        of initial state and reducer(Redux) on react app context which basically receives actions 
+        from the user interface(especially via server response) and performs the job requested by the user */}
+    <StateProvider initialState={initialState} reducer={reducer}>
+      <App />
+    </StateProvider>
+  </React.StrictMode>,
   document.getElementById("root")
 );
 

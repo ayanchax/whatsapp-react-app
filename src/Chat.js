@@ -7,6 +7,8 @@ import InsertEmoticonIcon from '@material-ui/icons/InsertEmoticon';
 import MicIcon from '@material-ui/icons/Mic';
 import SendIcon from '@material-ui/icons/Send';
 import { useParams } from "react-router-dom";
+import { useStateProviderContextValue } from './StateProvider';
+import firebase from "firebase";
 import db from './firebase'
 import "./Chat.css";
 
@@ -16,6 +18,8 @@ function Chat() {
     const roomId = useParams(); //fetch the room id from the url params of react-router-dom
     const [roomName, setRoomName] = useState("");
     const [seed, setSeed] = useState("");
+    const [messages, setMessages] = useState([]);
+    const [user, dispatch] = useStateProviderContextValue();
     useEffect(() => {
         if (roomId) {
             if (roomId.rid) {
@@ -23,6 +27,10 @@ function Chat() {
                     setRoomName(snapshot.data().name)
                 })
                 setSeed(roomId.rid)
+
+                db.collection("rooms").doc(roomId.rid).collection('messages').orderBy('timestamp', 'asc').onSnapshot((snapshot) => {
+                    setMessages(snapshot.docs.map(doc => doc.data()))
+                })
             }
 
         }
@@ -30,14 +38,26 @@ function Chat() {
             setSeed(Math.floor(Math.random() * 5000))
         }
 
-    }, [roomId]); //on roomid change, refresh snapshot of this collection realtime.
+    }, [roomId, messages]); //on roomid change, refresh snapshot of this collection realtime.
 
 
 
     const sendMessage = (e) => {
         e.preventDefault();
-        console.log(input)
+        db.collection("rooms").doc(roomId.rid).collection("messages").add({
+            name: user?.user.displayName,
+            message: input,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        })
         setInput("")
+    }
+    const getLastSeenInfo = () => {
+
+        var lastSeen = new Date(messages[messages.length - 1]?.timestamp?.toDate()).toUTCString()
+        if (lastSeen === "Invalid Date") {
+            return ""
+        }
+        return "last seen " + lastSeen;
     }
     return (
         <div className="chat">
@@ -45,7 +65,7 @@ function Chat() {
                 <Avatar src={`https://avatars.dicebear.com/api/human/${seed}.svg`} />
                 <div className="chat__headerInfo">
                     <h3>{roomName ? roomName : "Standard name"}</h3>
-                    <p>Last seen 21 minutes ago</p>
+                    <p>{getLastSeenInfo()}</p>
                 </div>
                 <div className="chat__headerRight">
                     <IconButton>
@@ -60,27 +80,17 @@ function Chat() {
             </div>
             <div className="chat__body">
                 {/*  chat__receiver means the logged in user in this device*/}
-                <p className={`chat__message ${true && "chat__receiver"}`}>
-                    <span className="chat__name">Ayan Chax</span>
-                    Hey guys
-                    <span className="chat__timestamp">
-                        4:36pm
-                    </span>
-                </p>
-                <p className="chat__message">
-                    <span className="chat__name">Dane Saw</span>
-                    What's up
-                    <span className="chat__timestamp">
-                        5:36pm
-                    </span>
-                </p>
-                <p className="chat__message">
-                    <span className="chat__name">John Doe</span>
-                    What are you upto mate
-                    <span className="chat__timestamp">
-                        5:37pm
-                    </span>
-                </p>
+                {messages.map(message => (
+                    <p key={message.id} className={`chat__message ${message.name === user?.user.displayName && "chat__receiver"}`}>
+                        <span className="chat__name">{message.name}</span>
+                        {message.message}
+                        <span className="chat__timestamp">
+                            {new Date(message.timestamp?.toDate()).toUTCString()}
+                        </span>
+                    </p>
+                ))}
+
+
 
             </div>
             <div className="chat__footer">

@@ -7,9 +7,12 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 import { SearchOutlined } from "@material-ui/icons";
 import SidebarChat from "./SidebarChat";
 import db from './firebase';
+import { useStateProviderContextValue } from './StateProvider';
 function Sidebar() {
     const [rooms, setRooms] = useState([]);
+    const [user, dispatch] = useStateProviderContextValue();
     useEffect(() => {
+
         const unsubscribe = db.collection('rooms').onSnapshot(snapshot => (
             // get into the docs list of collection rooms and populate the rooms array in real time whenever there is any change in the db
             setRooms(snapshot.docs.map(doc => ({
@@ -27,19 +30,19 @@ function Sidebar() {
     }, []);
 
     const createChat = () => {
-        console.log("Create chat")
-        const userName = prompt("Please enter name for new chat room");
-        if (userName) {
+        console.log("Create chat room")
+        const chatroom = prompt("Please enter name for new chat room");
+        if (chatroom) {
             //do some stuff here
             db.collection("rooms").add({
-                name: userName
+                name: chatroom
             })
         }
     }
     return (
         <div className="sidebar">
             <div className="sidebar__header">
-                <Avatar />
+                <Avatar src={user?.user.photoURL} />
                 <div className="sidebar__headerRight">
                     <IconButton>
                         <DonutLargeIcon />
