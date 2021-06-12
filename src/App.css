@@ -3,6 +3,9 @@
     place-items: center;
     background-color: #dadbd3;
     height: 100vh;
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
 }
 
 .app__body {
@@ -12,4 +15,11 @@
     height: 90vh;
     width: 90vw;
     box-shadow: -1px 4px 20px -6px rgba(0, 0, 0, 7);
+}
+
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+
+.app::-webkit-scrollbar {
+    display: none;
 }
