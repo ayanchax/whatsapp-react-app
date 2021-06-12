@@ -81,7 +81,7 @@ function Chat() {
             <div className="chat__body">
                 {/*  chat__receiver means the logged in user in this device*/}
                 {messages.map(message => (
-                    <p key={message.id} className={`chat__message ${message.name === user?.user.displayName && "chat__receiver"}`}>
+                    <p key={message.id} className={`chat__message ${message.name === user?.user?.displayName && "chat__receiver"}`}>
                         <span className="chat__name">{message.name}</span>
                         {message.message}
                         <span className="chat__timestamp">
